@@ -15,16 +15,28 @@ const forceValues = {}
 
 const input = [
     {
+        taskName: "Task 0",
+        hand: "Right",
+
+        forceDirection: "Superior",
+
         handHeight: "Waist",
         lateralAngle: "45 degrees",
         elbowAngle: "180 degrees",
-        forceDirection: "Superior"
+        
+        forceCount: "1",
+        forceMagnitude: "2",
+        forceDuration: "4"
     }
 ]
 
 /* PART 2 - FUNCTIONS
 
+    1.  createTask
 
+    2.  findValues
+
+    3.  makeOutput
 */
 
 function createTask(input) {
@@ -115,3 +127,17 @@ function makeOutput() {
 
 }
 
+/*  PART 3 - MAIN
+*/
+
+let maleMean
+let maleStdDev
+let femaleMean
+let femaleStdDev
+
+const tasks = createTask(input)
+
+/*  PART 4 - CONSOLE LOG
+
+    Not for use in actual calculator.
+*/
