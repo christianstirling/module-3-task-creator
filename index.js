@@ -15,18 +15,21 @@ const forceValues = {}
 
 const input = [
     {
-        taskName: "Task 0",
+        name: "Task Name",
         hand: "Right",
 
         forceDirection: "Superior",
 
-        handHeight: "Waist",
-        lateralAngle: "45 degrees",
-        elbowAngle: "180 degrees",
-        
+        verticalHeightFromFloor: "0.40",
+        lateralDistanceFromShoulder: "0",
+        lateralDirectionFromShoulder: "Neutral",
+        horizontalDistanceFromShoulder: "0.15",
+
+        isStanding: true,
+
         forceCount: "1",
         forceMagnitude: "2",
-        forceDuration: "4"
+        forceDuration: "3"
     }
 ]
 
@@ -40,95 +43,112 @@ const input = [
 */
 
 function createTask(input) {
-    let horizontalPosition
-    let verticalPositon
-    let lateralPosition
+    let h
+    let v
+    let l
+    let h2
+    let v2
+    let l2
+    let h3
+    let v3
+    let l3
 
-    let output = newArray()
+    let n
+
+    let output = new Array()
 
     for(i = 0; i < input.length; i++) {
 
-        horizontalPosition = 0
-        verticalPositon = 0
-        lateralPosition = 0
+        h = 0
+        v = 0
+        l = 0
+        h2 = 0
+        v2 = 0
+        l2 = 0
+        h3 = 0
+        v3 = 0
+        l3 = 0
+        
 
+        h = input[i].horizontalDistanceFromShoulder
+        h2 = Math.pow(h, 2)
+        h3 = Math.pow(h, 3)
 
-        switch (input[i].handHeight) {
-            case "Waist":
-                verticalPositon = -0.411
+        v = (averageFemaleShoulderHeight) - (input[i].verticalHeightFromFloor)
+        v2 = Math.pow(v, 2)
+        v3 = Math.pow(v, 3)
+
+        switch (input[i].lateralDirectionFromShoulder) {
+            case 'Inside':
+                l = ((-1)*(input[i].lateralDistanceFromShoulder))
                 break
-            case "Umbilicus":
-                verticalPositon = -0.335
+            case 'Neutral':
+                l = 0
                 break
-            case "Shoulder":
-                verticalPositon = 0
+            case 'Outside':
+                l = input[i].lateralDistanceFromShoulder
                 break
-            case "Eye":
-                verticalPositon = 0.180
+            default:
+        }
+        l2 = Math.pow(l, 2)
+        l3 = Math.pow(l, 3)
+    
+        n = 0
+
+        switch (input[i].forceDirection) {
+            case 'Superior':
+                n = (100.7 + 91.93*(v2) - 161.7*(h2) - 179.03*(l2) - 60.6*(h*v) + 58.21*(l*v))
                 break
-            case "Stature":
-                verticalPositon = 0.297
+            case 'Inferior':
+                n = (140.2 + 208.72*(v) - 32.47*(l) - 46.37*(v2) - 187.06*(h2) - 169.46*(l2) - 604.21*(v3) - 220.40*(h*v) - 127.77*(l*v))
                 break
-            case "Overhead":
-                verticalPositon = 0.473
+            case 'Anterior':
+                n = (96.2 - 43.06*(v) - 31.34*(l) - 126.96*(v2) + 181.93*(h2) - 283.74*(l2) + 147.23*(v3) + 373.58*(l3) + 32.08*(l*v))
+                break
+            case 'Posterior':
+                n = (98.9 - 36.73(l) - 139.18*(v2) + 456.95*(h2) - 391.98(l2) - 496.04*(h3) + 607.89*(l3) - 171.07*(h*v) - 58.8*(l*v))
+                break
+            case 'Medial':
+                n = (95.1 - 123.58*(v2) - 226.49*(h3) + 347.73*(l3) - 61.24*(h*v) - 179.04*(l*v))
+                break
+            case 'Lateral':
+                n = (55.4 + 68.94*(h) + 87.23*(l) - 315.53*(h3) - 293.33*(h*l) + 45.4*(h*v))
                 break
             default:
         }
 
-        //  Calculate lateralPosition value
+        femaleMean = n
+        femaleStdDev = (n*(0.3))
+        maleMean = (n*(1.5))
+        maleStdDev = (maleMean*(0.3))
 
-        switch (input[i].lateralAngle) {
-            case "-20 degrees":
-                lateralPosition = -0.200
-                break
-            case "0 degrees":
-                lateralPosition = 0
-                break
-            case "45 degrees":
-                switch (input[i].elbowAngle) {
-                    case "180 degrees":
-                        break
-                    case "135 degrees":
-                        break
-                    case "90 degrees":
-                        break
-                    default:
-                }
-                break
-            case "90 degrees":
-                break
-            default:
-        }
-
-        //  Calculate horizontalPosition value
-
-
-        findValues(input[i].forceDirection, horizontalPosition, verticalPositon, lateralPosition)
-
-        output.push(makeOutput(input[i]))
-
-    }
-
-    
-
-    
+        output.push(makeOutput(input[i]), i)
+    } 
 }
 
-function findValues(direction, x, y, z) {
-    maleMean = 0
-    maleStdDev = 0
-    femaleMean = 0
-    femaleStdDev = 0
+function makeOutput(input, index) {
+    let output = new Object();
 
-    //  Calculate mean and standardDeviation pairs for both male and female in the selected direction at the given x, y, z values for the hand location
-}
+    output.Task = (index + 1);
+    output.TaskName = input[index].name;
+    output.Hand = input[index].hand;
+    // output.ForceType = input[index].handleType;
+    output.ForceMagnitude = input[index].forceMagnitude;
+    output.ForceCount = input[index].forceCount;
+    output.ForceDuration = input[index].forceDuration;
 
-function makeOutput() {
+    output.MaleMean = maleMean;
+    output.MaleStdDev = maleStdDev;
+    output.FemaleMean = femaleMean;
+    output.FemaleStdDev = femaleStdDev;
 
+    return output;
 }
 
 /*  PART 3 - MAIN
 */
+
+const averageFemaleShoulderHeight = 0.54
 
 let maleMean
 let maleStdDev
@@ -141,3 +161,5 @@ const tasks = createTask(input)
 
     Not for use in actual calculator.
 */
+
+console.log(tasks)
