@@ -35,11 +35,35 @@ const input = [
 
 /* PART 2 - FUNCTIONS
 
-    1.  createTask
+    1.  createTask 
 
-    2.  findValues
+        This function is the main piece of the task creation process for module 3.
+        It takes the input in the form of an array of objects.
+        Each object contains the normal task information:
+            name, hand, force magnitude, count, and duration
+        -Plus the new modifier information specific to module 3:
+            vertical height (from floor), horizontal distance (from shoulder), lateral distance (from shoulder),
+            lateral direction (inside or outside shoulder), and force direction (out of 6 possible 1d directions)
 
-    3.  makeOutput
+        The function begins a for loop to iterate through the input array, performing the following calculations
+        for each object.
+        
+            The function sets the three variables (v, h, l) based on the user's input, 
+            then proceeds to calculate the mean strength for females in the given force direction.
+
+            Once the female mean is determined, the other values (female SD, male mean, male SD) are
+            calculated from that value.
+
+            The makeOutput function is called at the end to create the output object for this input object,
+            and that object is pushed onto the output array.
+        
+        Once the for loop ends, the whole output array is returned.
+
+    2.  makeOutput
+
+        This function is used to create the output objects which will ultimately be held in an output array.
+
+        The format of these objects is designed to match up with the input of the module 3 calculator.
 */
 
 function createTask(input) {
@@ -122,20 +146,22 @@ function createTask(input) {
         maleMean = (n*(1.5))
         maleStdDev = (maleMean*(0.3))
 
-        output.push(makeOutput(input[i]), i)
-    } 
+        output.push(makeOutput(input[i], i))
+    }
+    
+    return output
 }
 
 function makeOutput(input, index) {
     let output = new Object();
 
     output.Task = (index + 1);
-    output.TaskName = input[index].name;
-    output.Hand = input[index].hand;
-    // output.ForceType = input[index].handleType;
-    output.ForceMagnitude = input[index].forceMagnitude;
-    output.ForceCount = input[index].forceCount;
-    output.ForceDuration = input[index].forceDuration;
+    output.TaskName = input.name;
+    output.Hand = input.hand;
+    // output.ForceType = input.handleType;
+    output.ForceMagnitude = input.forceMagnitude;
+    output.ForceCount = input.forceCount;
+    output.ForceDuration = input.forceDuration;
 
     output.MaleMean = maleMean;
     output.MaleStdDev = maleStdDev;
@@ -146,6 +172,15 @@ function makeOutput(input, index) {
 }
 
 /*  PART 3 - MAIN
+
+    First, it creates a constant for the average female shoulder height.  This is used to compare to the height above the
+    ground, which is the vertical value that the user enters, to determine the hand's v value.
+
+    Then, variables for each mean and standard deviation value (male and female) are created globally.
+
+    Last, we create a constant tasks which is assigned the return value of the createTask function.
+    That function returns the output array of objects which contains the input tasks in the exact form
+    needed to be processed as input to the calculator. (includes the mean and standard deviation values)
 */
 
 const averageFemaleShoulderHeight = 0.54
