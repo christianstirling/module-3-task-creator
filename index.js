@@ -15,21 +15,34 @@ const forceValues = {}
 
 const input = [
     {
-        name: "Task Name",
+        name: "Task One",
         hand: "Right",
 
         forceDirection: "Superior",
-
-        verticalHeightFromFloor: "0.40",
+        isStanding: true,
+        verticalHeight: "0.40",
         lateralDistanceFromShoulder: "0",
         lateralDirectionFromShoulder: "Neutral",
         horizontalDistanceFromShoulder: "0.15",
 
-        isStanding: true,
-
         forceCount: "1",
         forceMagnitude: "2",
         forceDuration: "3"
+    },
+    {
+        name: "Task Two",
+        hand: "Left",
+
+        forceDirection: "Medial",
+        isStanding: false,
+        verticalHeight: "0.2",
+        lateralDistanceFromShoulder: "0.1",
+        lateralDirectionFromShoulder: "Outside",
+        horizontalDistanceFromShoulder: "0.13",
+
+        forceCount: "1",
+        forceMagnitude: "3",
+        forceDuration: "2"
     }
 ]
 
@@ -70,14 +83,6 @@ function createTask(input) {
     let h
     let v
     let l
-    let h2
-    let v2
-    let l2
-    let h3
-    let v3
-    let l3
-
-    let n
 
     let output = new Array()
 
@@ -86,21 +91,16 @@ function createTask(input) {
         h = 0
         v = 0
         l = 0
-        h2 = 0
-        v2 = 0
-        l2 = 0
-        h3 = 0
-        v3 = 0
-        l3 = 0
-        
+
+        maleMean = 0
+        maleStdDev = 0
+        femaleMean = 0
+        femaleStdDev = 0
+                
 
         h = input[i].horizontalDistanceFromShoulder
-        h2 = Math.pow(h, 2)
-        h3 = Math.pow(h, 3)
 
-        v = (averageFemaleShoulderHeight) - (input[i].verticalHeightFromFloor)
-        v2 = Math.pow(v, 2)
-        v3 = Math.pow(v, 3)
+        v = (averageFemaleShoulderHeight) - (input[i].verticalHeight)
 
         switch (input[i].lateralDirectionFromShoulder) {
             case 'Inside':
@@ -114,36 +114,32 @@ function createTask(input) {
                 break
             default:
         }
-        l2 = Math.pow(l, 2)
-        l3 = Math.pow(l, 3)
-    
-        n = 0
 
         switch (input[i].forceDirection) {
             case 'Superior':
-                n = (100.7 + 91.93*(v2) - 161.7*(h2) - 179.03*(l2) - 60.6*(h*v) + 58.21*(l*v))
+                femaleMean = (100.7 + 91.93*(v**2) - 161.7*(h**2) - 179.03*(l**2) - 60.6*(h*v) + 58.21*(l*v))
                 break
             case 'Inferior':
-                n = (140.2 + 208.72*(v) - 32.47*(l) - 46.37*(v2) - 187.06*(h2) - 169.46*(l2) - 604.21*(v3) - 220.40*(h*v) - 127.77*(l*v))
+                femaleMean = (140.2 + 208.72*(v) - 32.47*(l) - 46.37*(v**2) - 187.06*(h**2) - 169.46*(l**2) - 604.21*(v**3) - 220.40*(h*v) - 127.77*(l*v))
                 break
             case 'Anterior':
-                n = (96.2 - 43.06*(v) - 31.34*(l) - 126.96*(v2) + 181.93*(h2) - 283.74*(l2) + 147.23*(v3) + 373.58*(l3) + 32.08*(l*v))
+                femaleMean = (96.2 - 43.06*(v) - 31.34*(l) - 126.96*(v**2) + 181.93*(h**2) - 283.74*(l**2) + 147.23*(v**3) + 373.58*(l**3) + 32.08*(l*v))
                 break
             case 'Posterior':
-                n = (98.9 - 36.73(l) - 139.18*(v2) + 456.95*(h2) - 391.98(l2) - 496.04*(h3) + 607.89*(l3) - 171.07*(h*v) - 58.8*(l*v))
+                femaleMean = (98.9 - 36.73(l) - 139.18*(v**2) + 456.95*(h**2) - 391.98(l**2) - 496.04*(h**3) + 607.89*(l**3) - 171.07*(h*v) - 58.8*(l*v))
                 break
             case 'Medial':
-                n = (95.1 - 123.58*(v2) - 226.49*(h3) + 347.73*(l3) - 61.24*(h*v) - 179.04*(l*v))
+                femaleMean = (95.1 - 123.58*(v**2) - 226.49*(h**3) + 347.73*(l**3) - 61.24*(h*v) - 179.04*(l*v))
                 break
             case 'Lateral':
-                n = (55.4 + 68.94*(h) + 87.23*(l) - 315.53*(h3) - 293.33*(h*l) + 45.4*(h*v))
+                femaleMean = (55.4 + 68.94*(h) + 87.23*(l) - 315.53*(h**3) - 293.33*(h*l) + 45.4*(h*v))
                 break
             default:
+                femaleMean = 0
         }
 
-        femaleMean = n
-        femaleStdDev = (n*(0.3))
-        maleMean = (n*(1.5))
+        femaleStdDev = (femaleMean*(0.3))
+        maleMean = (femaleMean*(1.5))
         maleStdDev = (maleMean*(0.3))
 
         output.push(makeOutput(input[i], i))
